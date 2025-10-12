@@ -1,0 +1,76 @@
+NAME
+    pkgmgr — M4KK1 软件包管理器
+
+SYNOPSIS
+    pkgmgr [OPTIONS] OPERATION [PACKAGE...]
+    pkgmgr --help
+    pkgmgr --version
+
+DESCRIPTION
+    pkgmgr 是 M4KK1 的核心软件包管理命令，负责软件包的安装、卸载、查询、更新、依赖处理与路径控制等。
+
+OPERATIONS
+    -S <pkg>
+        安装指定包及其依赖。
+
+    -R <pkg>
+        卸载指定包。
+
+    -U <file>
+        安装本地包文件。
+
+    -Q <pkg>
+        查询已安装的包。
+
+    -Qi <pkg>
+        查询包的扩展信息。
+
+    -Qii <pkg>
+        查询包的完整信息，包含依赖、版本、安装日期等。
+
+    -Qs <keyword>
+        搜索可用包（仓库中或源中）匹配关键字。
+
+    -Qdt
+        列出孤立（orphans）依赖包。
+
+    -Tr <pkg>
+        显示指定包的依赖树。
+
+    -Syyu
+        刷新镜像数据库并升级系统中所有包。
+
+OPTIONS
+    --flect
+        使用 reflector 服务生成镜像源列表。
+
+    --target <path>
+        指定安装根目录。
+
+    --dbpath <path>
+        指定包数据库位置。
+
+    --cachedir <path>
+        指定包缓存目录。
+
+    --no-deps
+        安装或升级时不自动安装依赖。
+
+    --help
+        显示帮助信息。
+
+    --version
+        显示版本信息。
+
+EXAMPLES
+    pkgmgr -S vicode
+    pkgmgr -U ./foo.pkg
+    pkgmgr -Syyu
+    pkgmgr --flect
+    pkgmgr -Tr vicode
+
+SEE ALSO
+    pkgtrib(5)
+
+BUGS
+    功能仍处于开发中，某些命令在依赖解决与镜像切换上可能存在不完善或非最优化表现。

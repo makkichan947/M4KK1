@@ -1,0 +1,78 @@
+PTDSK(2)                 System Management Commands                PTDSK(2)
+
+NAME
+       ptdsk - M4KK1 分区与磁盘管理器 (Partition Disk Manager)
+
+SYNOPSIS
+       ptdsk [command] [options] [device]
+
+DESCRIPTION
+       ptdsk 是 M4KK1 系统的现代化磁盘管理工具，结合了 fdisk, cfdisk, parted 的特性，
+       并提供 TUI 界面。当仅输入 ptdsk 时，默认进入 TUI 界面，显示磁盘及分区情况，
+       并提供交互式操作。
+
+       支持功能：
+       - 列出磁盘与分区
+       - 新建 / 删除分区
+       - 格式化分区
+       - 转换 MBR <-> GPT
+       - 图形化展示：条形图 / 扇形图
+       - 自动挂载与卸载
+
+COMMANDS
+       list        列出所有磁盘与分区
+       mk          新建分区
+       rm          删除分区
+       fmt         格式化分区（支持 ext4, btrfs, swap）
+       conv        转换分区表类型 (MBR <-> GPT)
+       mount       挂载分区
+       umount      卸载分区
+       info        显示详细磁盘信息
+       tui         强制进入 TUI 界面（等价于直接执行 ptdsk）
+
+OPTIONS
+       -h, --help
+              显示帮助信息并退出
+
+       -d, --device <path>
+              指定目标磁盘或分区 (如 /dev/sda)
+
+       -f, --fs <fstype>
+              指定文件系统类型 (ext3, ext4, btrfs, swap)
+
+       -y, --yes
+              自动确认危险操作（如删除或格式化）
+
+INTERACTIVE MODE (TUI)
+       在 TUI 模式下，ptdsk 提供交互式磁盘管理界面：
+       - 上下键移动光标
+       - Enter 确认选项
+       - Tab 切换操作栏
+       - F10 保存并退出
+       - 可视化展示磁盘使用情况（条形/扇形图切换）
+
+EXAMPLES
+       ptdsk list
+              列出系统中的所有磁盘与分区。
+
+       ptdsk mk -d /dev/sda -f ext4
+              在 /dev/sda 上新建一个 ext4 分区。
+
+       ptdsk conv -d /dev/sdb
+              将 /dev/sdb 的分区表从 MBR 转换为 GPT。
+
+       ptdsk
+              直接进入 TUI 界面。
+
+FILES
+       /etc/ptdsk.conf
+              ptdsk 配置文件（默认图形模式、配色方案等）
+
+SEE ALSO
+       mount(2), umount(2), pkgmgr(5)
+
+AUTHOR
+       Yaku Makki
+
+M4KK1                         September 2025                     PTDSK(2)
+

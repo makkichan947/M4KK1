@@ -1,0 +1,56 @@
+# M4KK1内核构建系统包含文件
+# 定义通用构建规则和变量
+
+# 主机编译器设置
+HOSTCC       = gcc
+HOSTCXX      = g++
+HOSTCFLAGS   = -Wall -Wextra -O2
+HOSTCXXFLAGS = -Wall -Wextra -O2 -std=c++17
+
+# 目标编译器设置（使用标准工具链）
+CC           = gcc
+CXX          = g++
+AS           = nasm
+LD           = ld
+
+# 目标编译标志
+CFLAGS       = -Wall -Wextra -O2 -g -ffreestanding -nostdlib
+CFLAGS       += -m32
+CFLAGS       += -I$(srctree)/sys/src/include -I$(srctree)/sys/src/arch/m4kk1/include
+CFLAGS       += -DKERNEL_VERSION=\"$(KERNEL_VERSION)\"
+
+# 汇编标志
+ASFLAGS      = -f elf32
+
+# 链接标志
+LDFLAGS      = -T $(srctree)/sys/src/init/linker.ld
+LDFLAGS      += -nostdlib -z max-page-size=0x1000 -m elf_i386
+
+# 源代码树根目录
+srctree     := $(shell pwd)/../..
+
+# 导出树根目录
+export srctree
+
+# 通用构建规则
+define make-goal
+	$(1)_y := $(patsubst %.c,%.o,$(filter %.c,$($(1)_src)))
+	$(1)_y += $(patsubst %.asm,%.o,$(filter %.asm,$($(1)_src)))
+	$(1)_y += $(patsubst %.S,%.o,$(filter %.S,$($(1)_src)))
+
+	$(1): $$($(1)_y)
+		$(LD) $(LDFLAGS) -o $$@ $$^
+
+	$$($(1)_y): %.o: %.c
+		$(CC) $(CFLAGS) -c $$< -o $$@
+
+	$$($(1)_y): %.o: %.asm
+		$(AS) $(ASFLAGS) $$< -o $$@
+endef
+
+# 清理规则
+define clean-goal
+.PHONY: $(1)_clean
+$(1)_clean:
+	rm -f $(1) $$($(1)_y)
+endef
