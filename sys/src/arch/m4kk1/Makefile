@@ -2,7 +2,7 @@
 # 构建M4KK1架构相关代码
 
 # 源代码文件
-arch_src := $(wildcard *.asm */*.asm *.c */*.c)
+arch_src := $(wildcard *.asm) $(wildcard *.c)
 
 # 目标文件名
 ARCH_LIB := arch_m4kk1.a
@@ -21,6 +21,14 @@ all: $(ARCH_LIB)
 # 构建静态库
 $(ARCH_LIB): $(arch_y)
 	$(AR) rcs $@ $^
+
+# 汇编文件优先于C文件编译
+%.o: %.asm
+	$(AS) $(ASFLAGS) $< -o $@
+
+# C文件编译规则
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 # 清理目标
 .PHONY: clean

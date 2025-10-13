@@ -35,8 +35,8 @@ kernel: scripts/mkversion
 		drivers/mouse/mouse.a \
 		mm/mm.a \
 		fs/fs.a \
-		lib/lib.a \
-		kernel/*.o
+		kernel/*.o \
+		lib/lib.a
 
 # 清理目标
 clean:

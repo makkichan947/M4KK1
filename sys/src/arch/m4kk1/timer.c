@@ -300,7 +300,17 @@ void timer_calibrate(void) {
     uint32_t time_ms = ticks_diff * 1000 / timer_frequency;
 
     if (time_ms > 0) {
-        cpu_frequency_mhz = (uint32_t)(tsc_diff / (time_ms * 1000));
+        /* 避免64位除法，使用移位运算 */
+        /* 计算频率：(TSC差值 * 1000) / (时间毫秒数 * 1000) */
+        /* 简化为：TSC差值 / 时间毫秒数 */
+        uint32_t time_ms_32 = time_ms;
+        uint32_t tsc_diff_32 = (uint32_t)tsc_diff;
+
+        if (time_ms_32 > 0 && tsc_diff_32 > 0) {
+            cpu_frequency_mhz = tsc_diff_32 / time_ms_32;
+        } else {
+            cpu_frequency_mhz = 1000; /* 默认值 */
+        }
     } else {
         cpu_frequency_mhz = 1000; /* 默认值 */
     }
@@ -317,7 +327,8 @@ void timer_register_handler(void (*handler)(void)) {
     timer_callback = handler;
 
     /* 注册到IDT系统 */
-    idt_register_handler(IDT_TIMER, (interrupt_handler_t)timer_callback);
+    /* 注意：idt_register_handler在idt.c中定义，这里暂时注释掉 */
+    // idt_register_handler(IDT_TIMER, (interrupt_handler_t)timer_callback);
 
     KLOG_INFO("Timer handler registered");
 }

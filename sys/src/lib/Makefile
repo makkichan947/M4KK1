@@ -21,9 +21,9 @@ all: $(LIB_LIB)
 $(LIB_LIB): $(lib_y)
 	$(AR) rcs $@ $^
 
-# 强制使用32位编译
+# 内核库函数编译规则
 %.o: %.c
-	$(CC) $(CFLAGS) -m32 -c $< -o $@
+	$(CC) -Wall -Wextra -O2 -g -ffreestanding -nostdlib -m32 -I/home/Hausmeister/文档/M4KK1/sys/src/../../sys/src/include -I/home/Hausmeister/文档/M4KK1/sys/src/../../sys/src/arch/m4kk1/include -DKERNEL_VERSION=\"\" -c $< -o $@
 
 # 清理目标
 .PHONY: clean

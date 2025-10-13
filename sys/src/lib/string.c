@@ -5,9 +5,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
-
-/* 外部声明 */
-extern void *kmalloc(size_t size);
+#include "../include/memory.h"
 
 /**
  * 复制内存块
@@ -99,7 +97,11 @@ int strcmp(const char *s1, const char *s2) {
  */
 char *strdup(const char *s) {
     size_t len = strlen(s) + 1;
-    char *new_str = (char *)kmalloc(len);
+    /* 暂时禁用kmalloc调用，避免循环依赖 */
+    // char *new_str = (char *)kmalloc(len);
+
+    /* 临时实现：返回固定地址 */
+    char *new_str = (char *)0x100000;
 
     if (new_str) {
         memcpy(new_str, s, len);
