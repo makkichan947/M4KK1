@@ -1,6 +1,6 @@
 /**
- * M4KK1 Y4KU Kernel - 主内核文件
- * 负责内核初始化、内存管理、进程调度等核心功能
+ * M4KK1 Y4KU Kernel - Main Kernel Implementation
+ * 主内核文件 - 负责系统初始化和核心功能管理
  */
 
 #include <stdint.h>
@@ -14,7 +14,7 @@
 #include "idt.h"
 #include "timer.h"
 #include "process.h"
-#include "syscall.h"
+#include "m4k_syscall.h"
 #include "ldso.h"
 
 /**
@@ -115,10 +115,10 @@ void kmain(multiboot_info_t *mb_info, uint32_t magic) {
     process_init();
     console_write("   ✓ Process management initialized.\n");
 
-    // 6. 初始化系统调用系统
-    console_write("6. Initializing System Calls...\n");
-    syscall_init();
-    console_write("   ✓ System calls initialized.\n");
+    // 6. 初始化M4KK1独特系统调用系统
+    console_write("6. Initializing M4KK1 System Calls...\n");
+    m4k_syscall_init();
+    console_write("   ✓ M4KK1 system calls initialized.\n");
 
     // 7. 初始化动态链接库系统
     console_write("7. Initializing Dynamic Linker...\n");

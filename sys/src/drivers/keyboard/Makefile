@@ -8,7 +8,7 @@ keyboard_src := keyboard.c
 KEYBOARD_LIB := keyboard.a
 
 # 包含通用构建规则
-include ../../scripts/Makefile.include
+include ../../../../scripts/Makefile.include
 
 # 键盘对象文件
 keyboard_y := $(patsubst %.c,%.o,$(filter %.c,$(keyboard_src)))

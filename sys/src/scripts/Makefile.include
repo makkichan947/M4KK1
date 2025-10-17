@@ -27,7 +27,7 @@ LDFLAGS      = -T $(srctree)/sys/src/init/linker.ld
 LDFLAGS      += -nostdlib -z max-page-size=0x1000 -m elf_i386
 
 # 源代码树根目录
-srctree     := $(shell pwd)/../..
+srctree     := $(shell pwd)/../../..
 
 # 导出树根目录
 export srctree

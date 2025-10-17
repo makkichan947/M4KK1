@@ -8,7 +8,7 @@ lib_src := $(wildcard *.c */*.c)
 LIB_LIB := lib.a
 
 # 包含通用构建规则
-include ../../../scripts/Makefile.include
+include ../../../../scripts/Makefile.include
 
 # 库函数对象文件
 lib_y := $(patsubst %.c,%.o,$(filter %.c,$(lib_src)))
@@ -23,7 +23,7 @@ $(LIB_LIB): $(lib_y)
 
 # 内核库函数编译规则
 %.o: %.c
-	$(CC) -Wall -Wextra -O2 -g -ffreestanding -nostdlib -m32 -I/home/Hausmeister/文档/M4KK1/sys/src/../../sys/src/include -I/home/Hausmeister/文档/M4KK1/sys/src/../../sys/src/arch/m4kk1/include -DKERNEL_VERSION=\"\" -c $< -o $@
+	$(CC) $(CFLAGS) $(INC_DIRS) -DKERNEL_VERSION=\"\" -c $< -o $@
 
 # 清理目标
 .PHONY: clean

@@ -330,6 +330,9 @@ void timer_register_handler(void (*handler)(void)) {
     /* 注意：idt_register_handler在idt.c中定义，这里暂时注释掉 */
     // idt_register_handler(IDT_TIMER, (interrupt_handler_t)timer_callback);
 
+    /* 注册M4KK1独特系统调用处理函数到中断0x4D */
+    // idt_register_handler(0x4D, (interrupt_handler_t)m4k_syscall_handler);
+
     KLOG_INFO("Timer handler registered");
 }
 

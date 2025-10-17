@@ -8,7 +8,7 @@ fs_src := $(wildcard *.c */*.c)
 FS_LIB := fs.a
 
 # 包含通用构建规则
-include ../scripts/Makefile.include
+include ../../../scripts/Makefile.include
 
 # 文件系统对象文件
 fs_y := $(patsubst %.c,%.o,$(filter %.c,$(fs_src)))

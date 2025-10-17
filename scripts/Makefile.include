@@ -1,40 +1,58 @@
-# M4KK1通用Makefile包含文件
-# 定义通用构建规则和变量
+# M4KK1通用构建规则
+# 通用Makefile包含文件
 
-# 编译器设置
-HOSTCC ?= gcc
-HOSTCXX ?= g++
-HOSTCFLAGS := -Wall -Wextra -O2 -g
-HOSTCXXFLAGS := -Wall -Wextra -O2 -g -std=c++17
+# 编译器和工具链设置
+CC := gcc
+AS := nasm
+LD := ld
 
-# 导出变量
-export HOSTCC HOSTCXX HOSTCFLAGS HOSTCXXFLAGS
+# 通用编译标志
+CFLAGS := -Wall -Wextra -nostdlib -nostdinc -ffreestanding -mno-red-zone -m64
+ASFLAGS := -f elf64
+LDFLAGS := -Ttext 0x100000
 
-# 通用构建规则
+# 调试标志
+DEBUG_CFLAGS := -g -DDEBUG
+RELEASE_CFLAGS := -O2 -DNDEBUG
+
+# 架构特定标志
+X86_64_CFLAGS := -mcmodel=large -mno-red-zone
+X86_CFLAGS := -m32 -march=i386
+ARM64_CFLAGS := -march=armv8-a
+ARM_CFLAGS := -march=armv7-a -marm
+POWERPC_CFLAGS := -mcpu=powerpc64
+RISCV_CFLAGS := -march=rv64gc
+
+# 包含路径
+INC_DIRS := -I$(CURDIR)/include -I$(CURDIR)/../include
+
+# 库路径
+LIB_DIRS := -L$(CURDIR)/lib
+
+# 通用规则
 %.o: %.c
-	$(HOSTCC) $(HOSTCFLAGS) -c $< -o $@
-
-%.o: %.cpp
-	$(HOSTCXX) $(HOSTCXXFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $(INC_DIRS) -c $< -o $@
 
 %.o: %.asm
 	$(AS) $(ASFLAGS) $< -o $@
 
 # 清理规则
-.PHONY: clean
 clean:
-	rm -f *.o *.a *.so *.prg
-	rm -rf *.dSYM
+	rm -f *.o *.a *.bin *.img
 
 # 安装规则
-.PHONY: install
 install: all
+	@echo "安装完成"
 
 # 帮助规则
-.PHONY: help
 help:
 	@echo "通用构建规则"
-	@echo "  make all     - 构建所有目标"
-	@echo "  make clean   - 清理构建文件"
-	@echo "  make install - 安装构建结果"
-	@echo "  make help    - 显示此帮助"
+	@echo "可用目标:"
+	@echo "  all      - 构建所有目标"
+	@echo "  clean    - 清理构建文件"
+	@echo "  install  - 安装构建产物"
+	@echo "  help     - 显示此帮助信息"
+
+# 默认目标
+.PHONY: all clean install help
+all: help

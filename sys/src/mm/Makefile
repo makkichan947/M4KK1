@@ -8,7 +8,7 @@ mm_src := $(wildcard *.c */*.c)
 MM_LIB := mm.a
 
 # 包含通用构建规则
-include ../scripts/Makefile.include
+include ../../../scripts/Makefile.include
 
 # 内存管理对象文件
 mm_y := $(patsubst %.c,%.o,$(filter %.c,$(mm_src)))

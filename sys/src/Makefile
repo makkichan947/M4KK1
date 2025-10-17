@@ -1,77 +1,71 @@
-# M4KK1 Kernel Makefile
-# 主内核构建脚本，参考Linux内核构建系统
+# M4KK1 Kernel Multi-Architecture Makefile
+# 多架构内核构建脚本
 
 # 导出所有变量
 export
 
-# 包含主配置
-# include scripts/Kconfig
-
 # 包含通用构建规则
-include scripts/Makefile.include
+include ../../scripts/Makefile.include
+
+# 支持的架构
+SUPPORTED_ARCHES := x86_64 x86 arm arm64 powerpc riscv
+
+# 默认架构
+DEFAULT_ARCH := x86_64
 
 # 默认目标
-.PHONY: all clean install help menuconfig
-all: kernel
-
-# 内核构建目标
-kernel: scripts/mkversion
-	@echo "构建M4KK1宏内核..."
-	$(MAKE) -C drivers all
-	$(MAKE) -C arch/m4kk1 all
-	$(MAKE) -C mm all
-	$(MAKE) -C fs all
-	$(MAKE) -C lib all
-	$(MAKE) -C init all
-	$(MAKE) -C kernel all
-
-# 链接最终内核
-	@echo "链接最终内核..."
-	$(LD) $(LDFLAGS) -o m4kk1.krn \
-		init/entry.o \
-		arch/m4kk1/*.o \
-		drivers/drivers.a \
-		drivers/keyboard/keyboard.a \
-		drivers/mouse/mouse.a \
-		mm/mm.a \
-		fs/fs.a \
-		kernel/*.o \
-		lib/lib.a
-
-# 清理目标
-clean:
-	@echo "清理内核构建文件..."
-	$(MAKE) -C kernel clean
-	$(MAKE) -C arch/m4kk1 clean
-	$(MAKE) -C drivers clean
-	$(MAKE) -C fs clean
-	$(MAKE) -C mm clean
-	$(MAKE) -C init clean
-	$(MAKE) -C lib clean
-	rm -f scripts/mkversion
-
-# 安装目标
-install: all
-	@echo "安装内核..."
-	$(MAKE) -C arch/m4kk1 install
+.PHONY: all clean install help
+all: $(SUPPORTED_ARCHES)
 
 # 帮助目标
 help:
-	@echo "M4KK1内核构建系统"
+	@echo "M4KK1多架构内核构建系统"
+	@echo "支持的架构: $(SUPPORTED_ARCHES)"
+	@echo ""
 	@echo "可用目标:"
-	@echo "  all       - 构建整个内核 (默认)"
-	@echo "  clean     - 清理构建文件"
-	@echo "  install   - 安装内核"
-	@echo "  help      - 显示此帮助信息"
+	@echo "  all              - 构建所有架构"
+	@echo "  clean            - 清理所有架构"
+	@echo "  install          - 安装所有架构"
+	@echo "  help             - 显示此帮助信息"
+	@for arch in $(SUPPORTED_ARCHES); do \
+		echo "  $$arch           - 构建$$arch架构"; \
+		echo "  $$arch-clean     - 清理$$arch架构"; \
+		echo "  $$arch-install   - 安装$$arch架构"; \
+	done
 
-# 菜单配置目标
-menuconfig:
-	@echo "启动内核配置界面..."
-	@# 这里可以集成配置界面工具
+# 构建所有架构
+.PHONY: $(SUPPORTED_ARCHES)
+$(SUPPORTED_ARCHES):
+	@echo "构建M4KK1内核 ($@)..."
+	$(MAKE) -C ../../arch/$@ all
 
-# 版本信息生成（使用隐式规则）
-scripts/mkversion: scripts/mkversion.c
-	@echo "生成版本信息..."
-	gcc -Wall -Wextra -O2 -g -I/usr/include -I/usr/local/include -o $@ $<
+# 构建默认架构
+.PHONY: kernel
+kernel: $(DEFAULT_ARCH)
 
-# 包含子目录Makefile
+# 清理所有架构
+.PHONY: clean
+clean:
+	@echo "清理M4KK1内核构建文件..."
+	@for arch in $(SUPPORTED_ARCHES); do \
+		$(MAKE) -C ../../arch/$$arch clean; \
+	done
+
+# 安装所有架构
+.PHONY: install
+install: all
+	@echo "安装M4KK1内核..."
+	@for arch in $(SUPPORTED_ARCHES); do \
+		$(MAKE) -C ../../arch/$$arch install; \
+	done
+
+# 架构特定目标
+.PHONY: $(addsuffix -clean, $(SUPPORTED_ARCHES))
+$(addsuffix -clean, $(SUPPORTED_ARCHES)):
+	arch=$(patsubst %-clean,%,$@); \
+	$(MAKE) -C ../../arch/$$arch clean
+
+.PHONY: $(addsuffix -install, $(SUPPORTED_ARCHES))
+$(addsuffix -install, $(SUPPORTED_ARCHES)):
+	arch=$(patsubst %-install,%,$@); \
+	$(MAKE) -C ../../arch/$$arch install

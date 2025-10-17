@@ -8,7 +8,7 @@ mouse_src := mouse.c
 MOUSE_LIB := mouse.a
 
 # 包含通用构建规则
-include ../../scripts/Makefile.include
+include ../../../../scripts/Makefile.include
 
 # 鼠标对象文件
 mouse_y := $(patsubst %.c,%.o,$(filter %.c,$(mouse_src)))

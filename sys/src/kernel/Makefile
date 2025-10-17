@@ -14,7 +14,7 @@ include ../../../scripts/Makefile.include
 kernel_y := $(patsubst %.c,%.o,$(filter %.c,$(kernel_src)))
 
 # 编译标志
-KERNEL_CFLAGS := -I../../../sys/src/include -I../../../sys/src/arch/m4kk1/include -ffreestanding -nostdlib -std=gnu99 -m32 -fno-stack-protector
+KERNEL_CFLAGS := $(INC_DIRS) -ffreestanding -nostdlib -std=gnu99 -m32 -fno-stack-protector
 
 # 构建目标
 .PHONY: all
@@ -27,8 +27,8 @@ all: $(kernel_y)
 # 安装目标
 .PHONY: install
 install: $(KERNEL)
-	@echo "安装内核核心到 $(srctree)/../boot/"
-	cp $(KERNEL) $(srctree)/../boot/
+	@echo "安装内核核心到 boot/"
+	cp $(KERNEL) ../../../boot/
 
 # 清理目标
 .PHONY: clean
