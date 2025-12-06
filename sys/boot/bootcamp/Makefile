@@ -10,6 +10,9 @@ QEMU = qemu-system-i386
 NASM_FLAGS = -f bin
 QEMU_FLAGS = -drive file=$(DISK_IMG),format=raw,index=0,media=disk
 
+# 包含通用构建规则
+include ../../../scripts/Makefile.include
+
 # 文件
 STAGE1_SRC = stage1.asm
 STAGE2_SRC = stage2.asm

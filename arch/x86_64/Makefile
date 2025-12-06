@@ -20,7 +20,7 @@ ASFLAGS := -f elf64
 
 # C编译标志
 CFLAGS := -Wall -Wextra -O2 -g -ffreestanding -nostdlib -m64
-CFLAGS += -I$(srctree)/sys/src/include -I$(srctree)/arch/x86_64/include
+CFLAGS += -I../../../sys/src/include -I./include
 CFLAGS += -DKERNEL_VERSION=\"$(KERNEL_VERSION)\"
 
 # 默认目标

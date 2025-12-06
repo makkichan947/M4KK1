@@ -7,6 +7,9 @@ export
 # 包含通用构建规则
 include ../../scripts/Makefile.include
 
+# 包含网络协议栈
+include net/Makefile
+
 # 支持的架构
 SUPPORTED_ARCHES := x86_64 x86 arm arm64 powerpc riscv
 

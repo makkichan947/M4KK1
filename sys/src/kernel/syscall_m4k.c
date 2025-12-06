@@ -51,6 +51,10 @@ static struct {
 #define M4K_PERMISSION_USER      0x00000001  /* 用户权限 */
 #define M4K_PERMISSION_SYSTEM    0x000000FF  /* 系统权限 */
 
+/* 前向声明 */
+const char *m4k_syscall_get_name(uint32_t num);
+void m4k_syscall_init_handlers(void);
+
 /**
  * 初始化M4KK1独特系统调用表
  */
@@ -84,7 +88,7 @@ static bool m4k_syscall_check_permission(uint32_t syscall_num, uint32_t current_
  */
 void m4k_syscall_handler(void) {
     uint32_t syscall_num;
-    uint32_t result = 0xM4K00000;  /* M4KK1独特的错误码 */
+    uint32_t result = 0x4D000000;  /* M4KK1独特的错误码 */
     uint32_t saved_registers[6];    /* 保存的寄存器 */
 
     /* 获取系统调用号（从EAX，使用M4KK1独特的方式） */
@@ -133,7 +137,7 @@ void m4k_syscall_handler(void) {
         console_write(")\n");
 
         m4k_syscall_stats.permission_denied++;
-        result = 0xM4K00001;  /* M4KK1独特的权限拒绝码 */
+        result = 0x4D000001;  /* M4KK1独特的权限拒绝码 */
         goto m4k_syscall_return;
     }
 
@@ -174,7 +178,7 @@ void m4k_syscall_handler(void) {
         console_write_hex(syscall_num);
         console_write("\n");
         m4k_syscall_stats.failed_calls++;
-        result = 0xM4K00002;  /* M4KK1独特的手柄为空错误码 */
+        result = 0x4D000002;  /* M4KK1独特的手柄为空错误码 */
     }
 
 m4k_syscall_return:
@@ -305,7 +309,7 @@ static uint32_t m4k_syscall_read_impl(uint32_t arg1, uint32_t arg2, uint32_t arg
     console_write("\n");
 
     /* 暂时返回错误，表示不支持的文件描述符 */
-    return 0xM4K00003;  /* M4KK1独特的不支持错误码 */
+    return 0x4D000003;  /* M4KK1独特的不支持错误码 */
 }
 
 /**
@@ -337,7 +341,7 @@ static uint32_t m4k_syscall_write_impl(uint32_t arg1, uint32_t arg2, uint32_t ar
     }
 
     /* 其他文件描述符暂时不支持 */
-    return 0xM4K00003;  /* M4KK1独特的不支持错误码 */
+    return 0x4D000003;  /* M4KK1独特的不支持错误码 */
 }
 
 /**

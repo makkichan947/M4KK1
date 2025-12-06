@@ -7,7 +7,9 @@
 #define __STDBOOL_H__
 
 /* 布尔类型 */
+#ifndef __cplusplus
 typedef unsigned char bool;
+#endif
 
 /* 布尔常量 */
 #define true 1

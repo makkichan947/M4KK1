@@ -8,21 +8,21 @@
 
 #include <stdint.h>
 
-/* M4KK1独特的系统调用号 - 使用0xM4K0xxxx范围 */
-#define M4K_SYS_EXIT        0xM4K00001
-#define M4K_SYS_FORK        0xM4K00002
-#define M4K_SYS_READ        0xM4K00003
-#define M4K_SYS_WRITE       0xM4K00004
-#define M4K_SYS_OPEN        0xM4K00005
-#define M4K_SYS_CLOSE       0xM4K00006
-#define M4K_SYS_EXEC        0xM4K00007
-#define M4K_SYS_MMAP        0xM4K00008
-#define M4K_SYS_MUNMAP      0xM4K00009
-#define M4K_SYS_IOCTL       0xM4K0000A
-#define M4K_SYS_FCNTL       0xM4K0000B
-#define M4K_SYS_SELECT      0xM4K0000C
-#define M4K_SYS_POLL        0xM4K0000D
-#define M4K_SYS_EPOLL       0xM4K0000E
+/* M4KK1独特的系统调用号 - 使用0x4D0xxxx范围 (4D = M4) */
+#define M4K_SYS_EXIT        0x4D000001
+#define M4K_SYS_FORK        0x4D000002
+#define M4K_SYS_READ        0x4D000003
+#define M4K_SYS_WRITE       0x4D000004
+#define M4K_SYS_OPEN        0x4D000005
+#define M4K_SYS_CLOSE       0x4D000006
+#define M4K_SYS_EXEC        0x4D000007
+#define M4K_SYS_MMAP        0x4D000008
+#define M4K_SYS_MUNMAP      0x4D000009
+#define M4K_SYS_IOCTL       0x4D00000A
+#define M4K_SYS_FCNTL       0x4D00000B
+#define M4K_SYS_SELECT      0x4D00000C
+#define M4K_SYS_POLL        0x4D00000D
+#define M4K_SYS_EPOLL       0x4D00000E
 
 /* M4KK1独特的进程标志 */
 #define M4K_CLONE_VM        0x00000100  /* 共享虚拟内存 */

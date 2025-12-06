@@ -17,6 +17,9 @@
 #include "m4k_syscall.h"
 #include "ldso.h"
 
+/* 前向声明 */
+void m4k_syscall_init(void);
+
 /**
  * 内核信息实例
  */

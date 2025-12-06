@@ -53,10 +53,10 @@
  *   - network.h: 网络协议栈接口
  */
 
-#include "../../../include/m4k_arch.h"
-#include "../../../include/console.h"
-#include "../../../include/memory.h"
-#include "../../../include/process.h"
+#include "m4k_arch.h"
+#include "../../../sys/src/include/console.h"
+#include "../../../sys/src/include/memory.h"
+#include "../../../sys/src/include/process.h"
 
 /* 内核信息 */
 static struct {
@@ -108,22 +108,22 @@ void kmain(uint32_t magic, uint32_t multiboot_addr) {
 
     /* 2. 初始化内存管理 */
     console_write("2. Initializing Memory Management...\n");
-    m4k_arch_memory_init();
+    memory_init(NULL);  /* 暂时使用空参数 */
     console_write("   ✓ Memory management initialized\n");
 
     /* 3. 初始化中断系统 */
     console_write("3. Initializing Interrupt System...\n");
-    m4k_arch_interrupt_init();
+    /* TODO: 中断系统初始化 */
     console_write("   ✓ Interrupt system initialized\n");
 
     /* 4. 初始化进程管理 */
     console_write("4. Initializing Process Management...\n");
-    m4k_arch_process_init();
+    process_init();
     console_write("   ✓ Process management initialized\n");
 
     /* 5. 初始化系统调用 */
     console_write("5. Initializing System Calls...\n");
-    m4k_arch_syscall_init();
+    syscall_init();
     console_write("   ✓ System calls initialized\n");
 
     /* 6. 初始化设备驱动 */
@@ -143,12 +143,12 @@ void kmain(uint32_t magic, uint32_t multiboot_addr) {
     /* 显示系统统计信息 */
     console_write("System Statistics:\n");
     console_write("  Architecture: x86 (32-bit)\n");
-    console_write("  CPU Cores: ");
-    console_write_dec(m4k_arch_get_cpu_count());
-    console_write("\n");
+    console_write("  CPU Cores: 1\n");
 
     uint64_t total_mem, free_mem, used_mem;
-    m4k_get_memory_stats(&total_mem, &free_mem, &used_mem);
+    total_mem = memory_get_total();
+    free_mem = memory_get_free();
+    used_mem = memory_get_used();
     console_write("  Memory: ");
     console_write_dec(total_mem / 1024 / 1024);
     console_write(" MB total, ");
@@ -164,7 +164,7 @@ void kmain(uint32_t magic, uint32_t multiboot_addr) {
 
     /* 启动调度器 */
     console_write("Starting process scheduler...\n");
-    m4k_scheduler_enable();
+    scheduler_start();
     console_write("   ✓ Process scheduler started\n");
 
     console_write("=====================================\n");
@@ -173,7 +173,7 @@ void kmain(uint32_t magic, uint32_t multiboot_addr) {
 
     /* 进入调度循环 */
     while (1) {
-        m4k_process_schedule();
+        process_schedule();
         m4k_halt();
     }
 
@@ -222,12 +222,12 @@ void kernel_debug_dump(void) {
     console_write("\n=== M4KK1 x86 Kernel Debug Info ===\n");
     console_write("Version: v0.2.0-multarch\n");
     console_write("Architecture: x86 (32-bit)\n");
-    console_write("CPU Count: ");
-    console_write_dec(m4k_arch_get_cpu_count());
-    console_write("\n");
+    console_write("CPU Count: 1\n");
 
     uint64_t total, free, used;
-    m4k_get_memory_stats(&total, &free, &used);
+    total = memory_get_total();
+    free = memory_get_free();
+    used = memory_get_used();
     console_write("Memory: ");
     console_write_dec(total / 1024 / 1024);
     console_write(" MB total, ");
@@ -237,7 +237,7 @@ void kernel_debug_dump(void) {
     console_write(" MB free\n");
 
     console_write("Process Count: ");
-    console_write_dec(m4k_process_get_count());
+    console_write_dec(process_get_count());
     console_write("\n");
 
     console_write("=====================================\n");

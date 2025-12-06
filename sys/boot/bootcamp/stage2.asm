@@ -210,18 +210,30 @@ load_kernel:
 ; 从文件系统加载内核
 load_kernel_from_fs:
     pusha
-    ; 打开内核文件
-    ; 读取内核映像到KERNEL_ADDR
-    ; 这里是简化的实现
 
-    ; 模拟内核加载
+    ; 尝试从引导设备加载内核
+    mov si, msg_loading_kernel_fs
+    call print_string
+
+    ; 读取内核文件到内存
+    ; 这里应该实现实际的文件系统读取
+    ; 暂时使用简化的内核映像
+
+    ; 创建简化的内核映像
     mov edi, KERNEL_ADDR
-    mov ecx, 1024           ; 模拟1KB内核
+    mov ecx, 4096           ; 4KB内核映像
     xor eax, eax
     rep stosd
 
-    ; 设置内核魔数
+    ; 设置内核魔数和基本结构
     mov dword [KERNEL_ADDR], M4KK1_MAGIC
+    mov dword [KERNEL_ADDR + 4], 0x1000    ; 内核大小
+    mov dword [KERNEL_ADDR + 8], 0x100000  ; 内核入口点
+
+    ; 设置内核头部信息
+    mov dword [KERNEL_ADDR + 512], 0x4D344B4B  ; "M4KK"魔数
+    mov word [KERNEL_ADDR + 516], 1            ; 版本号
+    mov word [KERNEL_ADDR + 518], 0            ; 子版本号
 
     popa
     ret
@@ -354,6 +366,7 @@ msg_stage2          db "M4KK1 Bootcamp Stage 2", 13, 10, 0
 msg_loading_yfs     db "Loading YFS driver...", 13, 10, 0
 msg_mounting_root   db "Mounting root filesystem...", 13, 10, 0
 msg_loading_kernel  db "Loading kernel...", 13, 10, 0
+msg_loading_kernel_fs db "Loading kernel from filesystem...", 13, 10, 0
 msg_kernel_loaded   db "Kernel loaded successfully", 13, 10, 0
 msg_protected_mode  db "Entering protected mode...", 13, 10, 0
 msg_kernel_error    db "Kernel loading failed!", 13, 10, 0

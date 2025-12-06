@@ -56,7 +56,38 @@ x86_64 x86 arm arm64 powerpc riscv multarch:
 clean:
 	@$(MAKE) -C tools/build clean
 
+# ISO镜像构建目标
+.PHONY: iso
+iso:
+	@./scripts/build_iso.sh
+
+# 测试目标
+.PHONY: test
+test:
+	@$(MAKE) -C test all
+
+# 编译器目标
+.PHONY: compilers
+compilers:
+	@$(MAKE) -C usr/opt/langcc all
+	@$(MAKE) -C usr/bin/MLang all
+
+# MLang编译器目标
+.PHONY: mlang
+mlang:
+	@$(MAKE) -C usr/bin/MLang all
+
+# 包管理目标
+.PHONY: packages
+packages:
+	@$(MAKE) -C pkg all
+
+# 安装目标
+.PHONY: install
+install:
+	@./scripts/install.sh
+
 # 其他目标
-.PHONY: kernel install list-arch iso
-kernel install list-arch iso:
+.PHONY: kernel install list-arch
+kernel install list-arch:
 	@$(MAKE) -C tools/build $@

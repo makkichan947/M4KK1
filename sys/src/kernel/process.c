@@ -18,6 +18,11 @@
 #include <string.h>
 #include <stdint.h>
 
+/* 声明asm关键字用于内联汇编 */
+#ifndef asm
+#define asm __asm__
+#endif
+
 /* 中断处理函数类型定义 */
 typedef void (*interrupt_handler_t)(void);
 

@@ -22,8 +22,8 @@ m4k_interrupt_entry:
     iret
 
 ; M4KK1独特的中断处理函数
-global m4k_interrupt_handler
-m4k_interrupt_handler:
+global m4k_interrupt_handler_impl
+m4k_interrupt_handler_impl:
     push ebp
     mov ebp, esp
 
@@ -39,6 +39,7 @@ m4k_interrupt_handler:
 
 .syscall_handler:
     ; 调用系统调用处理
+    extern m4k_syscall_handler
     call m4k_syscall_handler
 
     pop ebp

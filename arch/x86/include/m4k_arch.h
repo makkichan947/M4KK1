@@ -1,40 +1,10 @@
 /**
  * M4KK1 x86 Architecture Definitions
- * x86架构特定定义和接口 (32位)
- *
- * 文件: m4k_arch.h
- * 作者: M4KK1 Development Team
- * 版本: v0.2.0-multarch
- * 日期: 2025-10-16
- *
- * 描述:
- *   定义x86架构特定的常量、宏和接口函数
- *   提供与硬件抽象层的接口
- *
- * 架构特性:
- *   - 32位x86架构
- *   - 保护模式
- *   - 2级页表结构
- *   - 多处理器支持
- *
- * 内存布局:
- *   - 内核基地址: 0xC0000000
- *   - 用户空间: 0x00000000 - 0xBFFFFFFF
- *   - 内核空间: 0xC0000000 - 0xFFFFFFFF
- *
- * 中断处理:
- *   - 0x00-0x1F: 异常处理
- *   - 0x20-0x2F: 硬件中断
- *   - 0x4D: M4KK1独特系统调用
- *   - 0x80: 传统系统调用（兼容性）
- *
- * 修改历史:
- *   v0.2.0: 实现x86架构支持
- *   v0.1.0: 初始架构定义
+ * x86架构特定定义 (32位)
  */
 
-#ifndef __M4K_X86_ARCH_H__
-#define __M4K_X86_ARCH_H__
+#ifndef _M4K_ARCH_X86_H
+#define _M4K_ARCH_X86_H
 
 #include <stdint.h>
 
@@ -44,96 +14,101 @@
 #define M4K_ARCH_BITS           32
 
 /* 内存布局 */
-#define M4K_KERNEL_BASE         0xC0000000UL
-#define M4K_KERNEL_HEAP         0xC0400000UL
-#define M4K_KERNEL_STACK        0xC07FE000UL
-#define M4K_USER_BASE           0x00000000UL
-#define M4K_USER_LIMIT          0xBFFFFFFFUL
+#define KERNEL_BASE             0xC0000000UL   /* 3GB */
+#define KERNEL_HEAP             0xC0400000UL   /* 3GB + 4MB */
+#define USER_BASE               0x00000000UL   /* 0 */
+#define USER_STACK_TOP          0xBFFFFFFFUL   /* 3GB - 1 */
 
-/* 页表结构 */
-#define M4K_PAGE_SIZE           4096
-#define M4K_PAGE_MASK           (~(M4K_PAGE_SIZE - 1))
-#define M4K_PAGE_SHIFT          12
-#define M4K_PD_SHIFT            22
-#define M4K_PT_SHIFT            12
+/* 栈大小 */
+#define KERNEL_STACK_SIZE       0x1000     /* 4KB */
+#define USER_STACK_SIZE         0x10000    /* 64KB */
 
-/* 中断向量 */
-#define M4K_INT_SYSCALL         0x4D    /* M4KK1独特系统调用 */
-#define M4K_INT_TIMER           0x20    /* 定时器中断 */
-#define M4K_INT_KEYBOARD        0x21    /* 键盘中断 */
-#define M4K_INT_MOUSE           0x2C    /* 鼠标中断 */
+/* 页面大小 */
+#define PAGE_SIZE               0x1000     /* 4KB */
+#define PAGE_SHIFT              12
+#define PAGE_MASK               (~(PAGE_SIZE - 1))
 
 /* 段选择子 */
-#define M4K_KERNEL_CODE         0x08
-#define M4K_KERNEL_DATA         0x10
-#define M4K_USER_CODE           0x18
-#define M4K_USER_DATA           0x20
-#define M4K_TSS                 0x28
+#define KERNEL_CODE_SEGMENT     0x08
+#define KERNEL_DATA_SEGMENT     0x10
+#define USER_CODE_SEGMENT       0x18
+#define USER_DATA_SEGMENT       0x20
 
-/* 控制寄存器 */
-#define M4K_CR0_PE              (1 << 0)  /* 保护模式启用 */
-#define M4K_CR0_MP              (1 << 1)  /* 监控协处理器 */
-#define M4K_CR0_EM              (1 << 2)  /* 模拟协处理器 */
-#define M4K_CR0_TS              (1 << 3)  /* 任务切换 */
-#define M4K_CR0_ET              (1 << 4)  /* 扩展类型 */
-#define M4K_CR0_NE              (1 << 5)  /* 数字错误 */
-#define M4K_CR0_WP              (1 << 16) /* 写保护 */
-#define M4K_CR0_AM              (1 << 18) /* 对齐掩码 */
-#define M4K_CR0_NW              (1 << 29) /* 非写穿 */
-#define M4K_CR0_CD              (1 << 30) /* 缓存禁用 */
-#define M4K_CR0_PG              (1 << 31) /* 分页启用 */
+/* 中断相关 */
+#define IDT_ENTRIES             256
+#define IDT_BASE                0x00000000UL
+#define IDT_LIMIT               (IDT_ENTRIES * 8 - 1)
+
+/* GDT相关 */
+#define GDT_ENTRIES             5
+#define GDT_BASE                0x00001000UL
+#define GDT_LIMIT               (GDT_ENTRIES * 8 - 1)
+
+/* 系统调用 */
+#define SYSCALL_INTERRUPT       0x80
+#define M4K_SYSCALL_INTERRUPT   0x4D
+
+/* 寄存器结构 */
+typedef struct {
+    uint32_t eax, ebx, ecx, edx;
+    uint32_t esi, edi, ebp, esp;
+    uint32_t eip, eflags, cr3;
+    uint32_t cs, ss, ds, es, fs, gs;
+} m4k_registers_t;
+
+/* 中断栈帧 */
+typedef struct {
+    uint32_t eip;
+    uint32_t cs;
+    uint32_t eflags;
+    uint32_t esp;
+    uint32_t ss;
+} m4k_interrupt_frame_t;
+
+/* 页表项 */
+typedef uint32_t pte_t;
+typedef uint32_t pde_t;
+
+/* 页表标志 */
+#define PTE_PRESENT             (1 << 0)
+#define PTE_WRITABLE            (1 << 1)
+#define PTE_USER                (1 << 2)
+#define PTE_WRITE_THROUGH       (1 << 3)
+#define PTE_CACHE_DISABLE       (1 << 4)
+#define PTE_ACCESSED            (1 << 5)
+#define PTE_DIRTY               (1 << 6)
+#define PTE_LARGE_PAGE          (1 << 7)
 
 /* 架构特定函数声明 */
 void m4k_arch_init(void);
 void m4k_arch_detect_features(void);
-uint32_t m4k_arch_get_cpu_count(void);
-void m4k_arch_send_ipi(uint32_t cpu, uint32_t vector);
+void m4k_arch_setup_paging(void);
 
-/* 内存管理 */
-void m4k_arch_paging_init(void);
-void *m4k_arch_map_page(uint32_t virtual_addr, uint32_t physical_addr, uint32_t flags);
-void m4k_arch_unmap_page(uint32_t virtual_addr);
+/* 内联汇编辅助函数 */
+static inline void m4k_cpuid(uint32_t leaf, uint32_t *eax, uint32_t *ebx, uint32_t *ecx, uint32_t *edx) {
+    __asm__ volatile (
+        "cpuid"
+        : "=a"(*eax), "=b"(*ebx), "=c"(*ecx), "=d"(*edx)
+        : "a"(leaf)
+    );
+}
 
-/* 中断处理 */
-void m4k_arch_interrupt_init(void);
-void m4k_arch_register_handler(uint32_t vector, void *handler);
-void m4k_arch_enable_interrupts(void);
-void m4k_arch_disable_interrupts(void);
+static inline void m4k_enable_interrupts(void) {
+    __asm__ volatile ("sti");
+}
 
-/* I/O 操作 */
-uint8_t m4k_arch_inb(uint16_t port);
-void m4k_arch_outb(uint16_t port, uint8_t value);
-uint16_t m4k_arch_inw(uint16_t port);
-void m4k_arch_outw(uint16_t port, uint16_t value);
-uint32_t m4k_arch_ind(uint16_t port);
-void m4k_arch_outd(uint16_t port, uint32_t value);
+static inline void m4k_disable_interrupts(void) {
+    __asm__ volatile ("cli");
+}
 
-/* CPU信息 */
-typedef struct {
-    uint32_t cpu_id;
-    uint32_t features_edx;
-    uint32_t features_ecx;
-    uint32_t cpu_count;
-    uint32_t core_count;
-    uint32_t thread_count;
-    char vendor_string[13];
-    char brand_string[48];
-} m4k_cpu_info_t;
+static inline void m4k_halt(void) {
+    __asm__ volatile ("hlt");
+}
 
-extern m4k_cpu_info_t m4k_cpu_info;
+static inline void m4k_pause(void) {
+    __asm__ volatile ("pause");
+}
 
-/* 内存信息 */
-typedef struct {
-    uint32_t total_memory;
-    uint32_t free_memory;
-    uint32_t used_memory;
-    uint32_t kernel_memory;
-    uint32_t user_memory;
-} m4k_memory_info_t;
-
-extern m4k_memory_info_t m4k_memory_info;
-
-/* 架构特定内联函数 */
 static inline uint32_t m4k_read_cr0(void) {
     uint32_t value;
     __asm__ volatile ("movl %%cr0, %0" : "=r"(value));
@@ -142,12 +117,6 @@ static inline uint32_t m4k_read_cr0(void) {
 
 static inline void m4k_write_cr0(uint32_t value) {
     __asm__ volatile ("movl %0, %%cr0" : : "r"(value));
-}
-
-static inline uint32_t m4k_read_cr2(void) {
-    uint32_t value;
-    __asm__ volatile ("movl %%cr2, %0" : "=r"(value));
-    return value;
 }
 
 static inline uint32_t m4k_read_cr3(void) {
@@ -170,34 +139,55 @@ static inline void m4k_write_cr4(uint32_t value) {
     __asm__ volatile ("movl %0, %%cr4" : : "r"(value));
 }
 
-static inline void m4k_enable_interrupts(void) {
-    __asm__ volatile ("sti");
+/* 原子操作 */
+static inline uint32_t m4k_atomic_exchange(uint32_t *ptr, uint32_t value) {
+    __asm__ volatile (
+        "xchgl %0, %1"
+        : "+r"(value), "+m"(*ptr)
+        : : "memory"
+    );
+    return value;
 }
 
-static inline void m4k_disable_interrupts(void) {
-    __asm__ volatile ("cli");
+static inline uint32_t m4k_atomic_compare_exchange(uint32_t *ptr, uint32_t old_val, uint32_t new_val) {
+    uint32_t result;
+    __asm__ volatile (
+        "lock cmpxchgl %2, %1"
+        : "=a"(result), "+m"(*ptr)
+        : "r"(new_val), "0"(old_val)
+        : "memory"
+    );
+    return result;
 }
 
-static inline uint32_t m4k_read_flags(void) {
-    uint32_t flags;
-    __asm__ volatile ("pushfl; popl %0" : "=r"(flags));
-    return flags;
+static inline uint32_t m4k_atomic_add(uint32_t *ptr, uint32_t value) {
+    __asm__ volatile (
+        "lock xaddl %0, %1"
+        : "+r"(value), "+m"(*ptr)
+        : : "memory"
+    );
+    return value;
 }
 
-static inline void m4k_write_flags(uint32_t flags) {
-    __asm__ volatile ("pushl %0; popfl" : : "r"(flags));
+static inline uint32_t m4k_atomic_increment(uint32_t *ptr) {
+    return m4k_atomic_add(ptr, 1);
 }
 
-static inline void m4k_invalidate_tlb(uint32_t addr) {
-    __asm__ volatile ("invlpg (%0)" : : "r"(addr));
+static inline uint32_t m4k_atomic_decrement(uint32_t *ptr) {
+    return m4k_atomic_add(ptr, -1);
 }
 
-static inline void m4k_halt(void) {
-    __asm__ volatile ("hlt");
+/* 内存屏障 */
+static inline void m4k_memory_barrier(void) {
+    __asm__ volatile ("" : : : "memory");
 }
 
-static inline void m4k_pause(void) {
-    __asm__ volatile ("pause");
+static inline void m4k_read_barrier(void) {
+    __asm__ volatile ("" : : : "memory");
 }
 
-#endif /* __M4K_X86_ARCH_H__ */
+static inline void m4k_write_barrier(void) {
+    __asm__ volatile ("" : : : "memory");
+}
+
+#endif /* _M4K_ARCH_X86_H */

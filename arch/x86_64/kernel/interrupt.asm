@@ -60,8 +60,8 @@ m4k_interrupt_entry:
     iretq
 
 ; M4KK1独特的中断处理函数
-global m4k_interrupt_handler
-m4k_interrupt_handler:
+global m4k_interrupt_handler_impl
+m4k_interrupt_handler_impl:
     ; 参数：rdi = 栈指针
     push rbp
     mov rbp, rsp
@@ -79,6 +79,7 @@ m4k_interrupt_handler:
 
 .syscall_handler:
     ; 调用系统调用处理
+    extern m4k_syscall_handler
     call m4k_syscall_handler
 
     pop rbp

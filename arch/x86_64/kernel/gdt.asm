@@ -14,7 +14,7 @@ struc m4k_gdt_entry
 endstruc
 
 ; M4KK1独特的GDT指针结构
-struc m4k_gdt_ptr
+struc m4k_gdt_ptr_struct
     .limit          resw 1      ; GDT限制
     .base           resq 1      ; GDT基地址（64位）
 endstruc

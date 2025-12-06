@@ -126,5 +126,5 @@ msg_disk_error      db "Disk error!", 13, 10, 0
 dd M4KK1_MAGIC
 
 ; 填充到512字节并添加引导标志
-times 512 - ($ - $$) - 2 db 0
+times 510 - ($ - $$) db 0
 dw BOOT_SIGNATURE
