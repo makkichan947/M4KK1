@@ -16,9 +16,13 @@
 #include "process.h"
 #include "m4k_syscall.h"
 #include "ldso.h"
+#include "../drivers/keyboard/keyboard.h"
+#include "../drivers/mouse/mouse.h"
 
 /* 前向声明 */
 void m4k_syscall_init(void);
+void keyboard_init(void);
+void mouse_init(void);
 
 /**
  * 内核信息实例
@@ -123,14 +127,25 @@ void kmain(multiboot_info_t *mb_info, uint32_t magic) {
     m4k_syscall_init();
     console_write("   ✓ M4KK1 system calls initialized.\n");
 
-    // 7. 初始化动态链接库系统
-    console_write("7. Initializing Dynamic Linker...\n");
+    // 7. 初始化设备驱动
+    console_write("7. Initializing Device Drivers...\n");
+    // Initialize keyboard driver
+    keyboard_init();
+    console_write("   ✓ Keyboard driver initialized.\n");
+    
+    // Initialize mouse driver
+    mouse_init();
+    console_write("   ✓ Mouse driver initialized.\n");
+
+    // 8. 初始化动态链接库系统
+    console_write("8. Initializing Dynamic Linker...\n");
     if (m4ll_init() != 0) {
         console_write("   WARNING: Dynamic linker initialization failed!\n");
         console_write("   Some features may not be available.\n");
     } else {
         console_write("   ✓ Dynamic linker initialized.\n");
     }
+
 
     console_write("=====================================\n");
     console_write("System Initialization Complete!\n");

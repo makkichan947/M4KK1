@@ -1,0 +1,72 @@
+// MLang初始化测试
+import std.io;
+
+func main() -> int {
+    println("MLang编译器初始化测试");
+    println("=====================");
+    
+    // 测试基本功能
+    var result: int = 42;
+    if result == 42 {
+        println("✓ 基本初始化测试通过");
+    } else {
+        println("✗ 基本初始化测试失败");
+        return 1;
+    }
+    
+    // 测试变量操作
+    var a: int = 10;
+    var b: int = 20;
+    var sum: int = a + b;
+    
+    if sum == 30 {
+        println("✓ 变量操作测试通过");
+    } else {
+        println("✗ 变量操作测试失败");
+        return 1;
+    }
+    
+    // 测试控制流
+    var counter: int = 0;
+    while counter < 5 {
+        counter = counter + 1;
+    }
+    
+    if counter == 5 {
+        println("✓ 控制流测试通过");
+    } else {
+        println("✗ 控制流测试失败");
+        return 1;
+    }
+    
+    // 测试函数调用
+    var func_result: int = test_function(5);
+    if func_result == 25 {
+        println("✓ 函数调用测试通过");
+    } else {
+        println("✗ 函数调用测试失败");
+        return 1;
+    }
+    
+    // 测试数组
+    var arr: [5]int;
+    var i: int = 0;
+    while i < 5 {
+        arr[i] = i * i;
+        i = i + 1;
+    }
+    
+    if arr[4] == 16 {
+        println("✓ 数组测试通过");
+    } else {
+        println("✗ 数组测试失败");
+        return 1;
+    }
+    
+    println("所有初始化测试通过！");
+    return 0;
+}
+
+func test_function(x: int) -> int {
+    return x * x;
+}
