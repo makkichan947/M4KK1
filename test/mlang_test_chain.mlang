@@ -1,0 +1,351 @@
+// M4KK1 MLang Test Chain
+// Comprehensive test suite for MLang compiler functionality
+
+import std.io;
+
+func main() -> int {
+    println("M4KK1 MLang Test Chain");
+    println("=====================");
+    
+    // Run all tests
+    var tests_passed: int = 0;
+    var total_tests: int = 0;
+    
+    // Test 1: Basic functionality
+    if test_basic_functionality() {
+        println("✓ Basic functionality test passed");
+        tests_passed = tests_passed + 1;
+    } else {
+        println("✗ Basic functionality test failed");
+    }
+    total_tests = total_tests + 1;
+    
+    // Test 2: Variable operations
+    if test_variables() {
+        println("✓ Variable operations test passed");
+        tests_passed = tests_passed + 1;
+    } else {
+        println("✗ Variable operations test failed");
+    }
+    total_tests = total_tests + 1;
+    
+    // Test 3: Control flow
+    if test_control_flow() {
+        println("✓ Control flow test passed");
+        tests_passed = tests_passed + 1;
+    } else {
+        println("✗ Control flow test failed");
+    }
+    total_tests = total_tests + 1;
+    
+    // Test 4: Functions
+    if test_functions() {
+        println("✓ Functions test passed");
+        tests_passed = tests_passed + 1;
+    } else {
+        println("✗ Functions test failed");
+    }
+    total_tests = total_tests + 1;
+    
+    // Test 5: Arrays
+    if test_arrays() {
+        println("✓ Arrays test passed");
+        tests_passed = tests_passed + 1;
+    } else {
+        println("✗ Arrays test failed");
+    }
+    total_tests = total_tests + 1;
+    
+    // Test 6: Advanced features
+    if test_advanced_features() {
+        println("✓ Advanced features test passed");
+        tests_passed = tests_passed + 1;
+    } else {
+        println("✗ Advanced features test failed");
+    }
+    total_tests = total_tests + 1;
+    
+    // Print summary
+    print("Tests passed: ");
+    print(tests_passed);
+    print("/");
+    println(total_tests);
+    
+    if tests_passed == total_tests {
+        println("✓ ALL TESTS PASSED!");
+        return 0;
+    } else {
+        println("✗ SOME TESTS FAILED!");
+        return 1;
+    }
+}
+
+// Test basic functionality
+func test_basic_functionality() -> bool {
+    var a: int = 42;
+    var b: int = 58;
+    var sum: int = a + b;
+    
+    if sum != 100 {
+        return false;
+    }
+    
+    var message: string = "Hello, MLang!";
+    if message != "Hello, MLang!" {
+        return false;
+    }
+    
+    return true;
+}
+
+// Test variable operations
+func test_variables() -> bool {
+    var i: int = 10;
+    var f: float = 3.14;
+    var b: bool = true;
+    
+    // Test integer operations
+    if i + 5 != 15 {
+        return false;
+    }
+    
+    if i - 3 != 7 {
+        return false;
+    }
+    
+    if i * 2 != 20 {
+        return false;
+    }
+    
+    if i / 2 != 5 {
+        return false;
+    }
+    
+    // Test boolean operations
+    if !b {
+        return false;
+    }
+    
+    var c: bool = false;
+    if c {
+        return false;
+    }
+    
+    return true;
+}
+
+// Test control flow
+func test_control_flow() -> bool {
+    var counter: int = 0;
+    
+    // Test while loop
+    while counter < 5 {
+        counter = counter + 1;
+    }
+    
+    if counter != 5 {
+        return false;
+    }
+    
+    // Test if-else
+    var x: int = 10;
+    var result: int = 0;
+    
+    if x > 5 {
+        result = 1;
+    } else {
+        result = 0;
+    }
+    
+    if result != 1 {
+        return false;
+    }
+    
+    // Test nested conditions
+    var a: int = 5;
+    var b: int = 10;
+    var c: int = 15;
+    
+    if a < b {
+        if b < c {
+            if a < c {
+                return true;
+            }
+        }
+    }
+    
+    return false;
+}
+
+// Test functions
+func test_functions() -> bool {
+    var result: int = add_numbers(10, 20);
+    if result != 30 {
+        return false;
+    }
+    
+    var factorial_result: int = factorial(5);
+    if factorial_result != 120 {
+        return false;
+    }
+    
+    // Test recursive fibonacci
+    var fib_result: int = fibonacci(7);
+    if fib_result != 13 {
+        return false;
+    }
+    
+    return true;
+}
+
+// Helper function for addition
+func add_numbers(a: int, b: int) -> int {
+    return a + b;
+}
+
+// Helper function for factorial
+func factorial(n: int) -> int {
+    if n <= 1 {
+        return 1;
+    } else {
+        return n * factorial(n - 1);
+    }
+}
+
+// Helper function for fibonacci
+func fibonacci(n: int) -> int {
+    if n <= 1 {
+        return n;
+    } else {
+        return fibonacci(n - 1) + fibonacci(n - 2);
+    }
+}
+
+// Test arrays
+func test_arrays() -> bool {
+    var numbers: [10]int;
+    var i: int = 0;
+    
+    // Initialize array
+    while i < 10 {
+        numbers[i] = i * i;
+        i = i + 1;
+    }
+    
+    // Verify array contents
+    i = 0;
+    while i < 10 {
+        if numbers[i] != i * i {
+            return false;
+        }
+        i = i + 1;
+    }
+    
+    // Test array access
+    if numbers[5] != 25 {
+        return false;
+    }
+    
+    if numbers[9] != 81 {
+        return false;
+    }
+    
+    return true;
+}
+
+// Test advanced features
+func test_advanced_features() -> bool {
+    // Test string operations
+    var str1: string = "Hello";
+    var str2: string = "World";
+    var combined: string = str1 + " " + str2;
+    
+    if combined != "Hello World" {
+        return false;
+    }
+    
+    // Test complex control flow
+    var x: int = 0;
+    var y: int = 0;
+    
+    while x < 3 {
+        y = 0;
+        while y < 3 {
+            if x * y != x * y {  // This should always be true
+                return false;
+            }
+            y = y + 1;
+        }
+        x = x + 1;
+    }
+    
+    // Test variable scope
+    var outer: int = 100;
+    {
+        var inner: int = 200;
+        if outer + inner != 300 {
+            return false;
+        }
+    }
+    
+    // Test multiple variable declarations
+    var a: int = 1, b: int = 2, c: int = 3;
+    if a + b + c != 6 {
+        return false;
+    }
+    
+    return true;
+}
+
+// Additional test functions for more comprehensive coverage
+func test_complex_data_structures() -> bool {
+    // Test nested arrays or structures if supported
+    var matrix: [3][3]int;
+    var i: int = 0;
+    
+    while i < 3 {
+        var j: int = 0;
+        while j < 3 {
+            matrix[i][j] = i * 3 + j;
+            j = j + 1;
+        }
+        i = i + 1;
+    }
+    
+    // Verify matrix contents
+    i = 0;
+    while i < 3 {
+        var j: int = 0;
+        while j < 3 {
+            if matrix[i][j] != i * 3 + j {
+                return false;
+            }
+            j = j + 1;
+        }
+        i = i + 1;
+    }
+    
+    return true;
+}
+
+func test_error_handling() -> bool {
+    // Test edge cases and error conditions
+    var zero: int = 0;
+    var positive: int = 10;
+    
+    // Test division edge case (if supported)
+    if positive / 2 != 5 {
+        return false;
+    }
+    
+    // Test comparison operations
+    if !(positive > zero) {
+        return false;
+    }
+    
+    if positive <= zero {
+        return false;
+    }
+    
+    return true;
+}
